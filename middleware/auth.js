@@ -1,6 +1,7 @@
-const { getUser } = require("../Service/Auth");
 
-async function restrictToLoginUserOnly(req, res, next) {
+import { getUser } from "../Service/Auth.js";
+
+export async function restrictToLoginUserOnly(req, res, next) {
     const token = req.cookies?.usrId; // Safe navigation operator to avoid accessing undefined
     const username = req.cookies?.username; // Retrieve the username from the cookie
 
@@ -15,7 +16,3 @@ async function restrictToLoginUserOnly(req, res, next) {
 
     next();
 }
-
-module.exports = {
-    restrictToLoginUserOnly,
-};

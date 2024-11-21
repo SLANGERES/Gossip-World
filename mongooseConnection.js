@@ -1,9 +1,5 @@
-const mongooe=require('mongoose')
+import mongoose from 'mongoose';
 
-function mongooseConnection(url){
-    return mongooe.connect(url);
-}
-
-module.exports={
-    mongooseConnection,
+export function mongooseConnection(url) {
+    return mongoose.connect(url);
 }

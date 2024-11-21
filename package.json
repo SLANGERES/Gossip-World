@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "socket Programm",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@langchain/google-vertexai": "^0.1.2",
+    "@langchain/google-vertexai-web": "^0.1.2",
+    "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "cookie": "^0.6.0",
     "cookie-parser": "^1.4.6",
@@ -18,7 +22,11 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.2",
     "nodemon": "^3.1.4",
-    "socket.io": "^4.7.5"
+    "peer": "^1.0.2",
+    "peerjs": "^1.5.4",
+    "simple-peer": "^9.11.1",
+    "socket.io": "^4.7.5",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.9"

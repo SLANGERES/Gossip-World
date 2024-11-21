@@ -1,22 +1,19 @@
-const mongoose =require('mongoose')
+import mongoose from 'mongoose';
 
-
-const userSchema =new mongoose.Schema({
-    
-    Username:{
+const userSchema = new mongoose.Schema({
+    Username: {
         type: String,
         required: true,
     },
-    email:{
+    email: {
         type: String,
         required: true,
         unique: true,
     },
-    password:{
-        type:String,
+    password: {
+        type: String,
         required: true,
     }
+}, { timestamps: true });
 
-},{timestamps: true})
-
-module.exports = mongoose.model('ChatUser', userSchema);
+export default mongoose.model('ChatUser', userSchema);

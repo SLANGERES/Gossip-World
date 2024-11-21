@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Calling App</title>
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/gilroy-bold');
+        *{
+            font-family: 'Gilroy-Medium', sans-serif;
+            background-color: #141414;
+            color: aqua;
+        }
+        h2{
+            display: grid;
+            font-size: 30px;
+            justify-content: center;
+        }
+        #line{
+            background-color: aqua;
+            height: 1px;
+        }
+        video {
+            width: 45%;
+            margin: 10px;
+            border: solid aqua;
+            border-radius: 25% 10%;
+        }
+        #local-video {
+            float: left;
+        }
+        #remote-video {
+            float: right;
+        }
+        button {
+            border: solid,aqua;
+            border-radius: 10px 100px / 120px;
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #start-call:hover {
+            background-color: #ce8282;
+        }
+    </style>
+</head>
+<body>
+    <h2>Video Calling App</h2>
+    <div id="line"></div>
+    <br>
+    <div>
+        <video id="local-video" autoplay muted></video>
+        <video id="remote-video" autoplay></video>
+    </div>
+    <div>
+        <button id="start-call">Start Call</button>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let localStream;
+        let remoteStream;
+        let peerConnection;
+        const configuration = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' }
+            ]
+        };
+
+        // Get local video stream
+        async function getLocalStream() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+                localStream = stream;
+                document.querySelector("#local-video").srcObject = stream;
+            } catch (err) {
+                console.error('Failed to get local stream', err);
+            }
+        }
+
+        // Start video call (Create offer)
+        async function startCall() {
+            peerConnection = new RTCPeerConnection(configuration);
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit('ice-candidate', event.candidate);
+                }
+            };
+
+            peerConnection.ontrack = (event) => {
+                remoteStream = event.streams[0];
+                document.querySelector("#remote-video").srcObject = remoteStream;
+            };
+
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            socket.emit('offer', offer);
+        }
+
+        // Handle offer from other user
+        socket.on('offer', async (offer) => {
+            peerConnection = new RTCPeerConnection(configuration);
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            socket.emit('answer', answer);
+        });
+
+        // Handle answer from other user
+        socket.on('answer', (answer) => {
+            peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+        });
+
+        // Handle ICE candidates from other users
+        socket.on('ice-candidate', (candidate) => {
+            peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        });
+
+        // Start video calling when the user clicks the button
+        document.querySelector('#start-call').addEventListener('click', startCall);
+
+        // Call the function to get local media
+        getLocalStream();
+    </script>
+</body>
+</html>

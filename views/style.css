@@ -1,12 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/gilroy-bold');
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins',sans-serif;
+  font-family: 'Gilroy-Medium', sans-serif;
+  
 }
 body{
-  background: #1abc9c;
+  background-color: #141414;
   overflow: hidden;
 }
 ::selection{

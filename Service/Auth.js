@@ -1,8 +1,13 @@
-const jwt = require('jsonwebtoken')
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 
-const Key="k@j#n3339"
+const Key = "k@j#n3339";
 
-function setUser(User) {
+export function mongooseConnection(url) {
+    return mongoose.connect(url);
+}
+
+export function setUser(User) {
     if (!User || !User.Username || !User.email) {
         throw new Error('User object must have Username and email properties');
     }
@@ -14,16 +19,11 @@ function setUser(User) {
         email: User.email
     }, Key); // Optional: Add expiration time
 }
-function getUser(Token){
-    if(!Token){
-        console.log("Token not found")
-    }
-    else{
-        return jwt.verify(Token,Key)
-    }
-}
 
-module.exports={
-    setUser,
-    getUser,
+export function getUser(Token) {
+    if (!Token) {
+        console.log("Token not found");
+    } else {
+        return jwt.verify(Token, Key);
+    }
 }

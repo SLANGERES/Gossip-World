@@ -1,9 +1,10 @@
-const express=require('express')
-const Router=express.Router()
-const {Sign_up,Login}=require('../controller/userController')
+import express from 'express';
+import { Sign_up, Login } from '../controller/userController.js'; // Adjust the path as necessary
 
+const Router = express.Router();
+
+// Define your routes
 Router.post('/', Sign_up);
+Router.post('/Login', Login);
 
-Router.post('/Login',Login);
-
-module.exports=Router
+export { Router }; // Export Router as a named export

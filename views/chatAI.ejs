@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SYNCWAVE AI CHATROOM</title>
+    
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/gilroy-bold');
+        *{
+            margin: 0%;
+            padding: 0%;
+            background-color: #141414;
+            font-family: 'Gilroy-Medium', sans-serif;
+            color: aqua;
+        }
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+      #form { background: rgba(206, 193, 193, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #input:focus { outline: none; }
+      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages > li { padding: 0.5rem 1rem; }
+      #messages > li:nth-child(odd) { background: #494040; }
+      body {
+          font-family: Helvetica;
+          background-color: #141414;
+          margin: 0;
+
+        }
+        a {
+          text-decoration: none;
+          color: aqua;
+        }
+        .site-header { 
+          border-bottom: 1px solid #ce6868;
+          padding: .5em 1em;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .site-identity h1 {
+          font-size: 1.5em;
+          margin: .6em 0;
+          display: inline-block;
+        }
+
+        .site-navigation ul, 
+        .site-navigation li {
+          margin: 0; 
+          padding: 0;
+        }
+
+        .site-navigation li {
+          display: inline-block;
+          margin: 1.4em 1em 1em 1em;
+        }
+        .site-identity{
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+        <div class="site-identity">
+          <h1><a href="#">CHAT WITH RAMESH</a></h1>
+        </div>  
+        <nav class="site-navigation">
+          <ul class="nav">
+            <li id="usrname">HI I AM RAMESH AI BOT HOW CAN I HELP YOU ?</li>
+          </ul>
+        </nav>
+      </header>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button id="btn">Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+
+      // Listen for 'response' event from server
+      socket.on('response', function(data) {
+        const message = document.createElement('li');
+        message.textContent = "Ramesh: " + data.message;
+        document.getElementById('messages').appendChild(message);
+      });
+
+      // Handle form submit and emit message to server
+      document.getElementById('form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        var input = document.getElementById('input');
+        var message = input.value;
+        input.value = ''; // Clear the input field
+
+        const messageElement = document.createElement('li');
+        messageElement.textContent = "You: " + message;
+        document.getElementById('messages').appendChild(messageElement);
+
+        // Emit message to server
+        socket.emit('message', message);
+      });
+    </script>
+  </body>
+</html>
